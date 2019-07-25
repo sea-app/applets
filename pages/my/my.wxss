@@ -1,0 +1,6 @@
+/* pages/my/my.wxss */
+
+.a{
+  width:30px;
+  height:30px;
+}

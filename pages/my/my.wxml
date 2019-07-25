@@ -1,0 +1,6 @@
+<!--pages/my/my.wxml-->
+<view class="a">
+<open-data type="userAvatarUrl"></open-data>
+</view>
+
+<open-data type="userGender" lang="zh_CN"></open-data>
