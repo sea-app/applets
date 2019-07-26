@@ -6,13 +6,13 @@ class Cart extends Base{
     this._storageKeyName = 'cart';
   }
 
-  // 添加商品到购物车
+  // 添加商品到购物车（缓存）
   // 如果之前没有这样的商品，则直接添加一条新的纪录，数量为counts
   // 如果有,则只将相应数量 + counts
   // item    obj  商品对象
   // counts  int  商品数目
   add(item,counts){
-    var catData = this.getCartDataFromlOCAL();
+    var cartData = this.getCartDataFromLocal();
     var isHasInfo = this._isHasThatOne(item.id,cartData);
     if(isHasInfo.index == -1){
       item.counts = counts;
@@ -49,4 +49,69 @@ class Cart extends Base{
     }
     return result;
   }
+
+  // 计算购物车中商品的数量
+  // flag boolean 商品的选中状态
+  getCartTotalCounts(flag){
+    var data = this.getCartDataFromLocal();
+    var counts = 0;
+    for(let i=0; i<data.length; i++){
+      if(flag){
+        if(data[i].selectStatus){
+          counts += data[i].counts;
+        }
+      }
+      else{
+        counts += data[i].counts;
+      }
+    }
+    return counts;
+  }
+
+  // 修改商品数目
+  // id       int   商品id
+  // counts   int   商品数目
+  _changeCounts(id,counts){
+    var cartData = this.getCartDataFromLocal();
+    var hasInfo = this._isHasThatOne(id,cartData);
+    if(hasInfo.index != -1){
+      if(hasInfo.data.counts > 1){
+        cartData[hasInfo.index].counts += counts;
+      }
+    }
+    wx.setStorageSync(this._storageKeyName, cartData);
+  };
+
+  // 增加商品数目
+  addCounts(id){
+    this._changeCounts(id,1);
+  }
+
+  // 删除商品数目
+  cutCounts(id){
+    this._changeCounts(id,-1);
+  }
+
+  // 删除缓存中的商品类别
+  delete(ids){
+    // 如果ids参数不是数组，那么转换成数组
+    if(!(ids instanceof Array)){
+      ids = [ids];
+    }
+    var cartData = this.getCartDataFromLocal();
+    for(let i=0; i<ids.length; i++){
+      var hasInfo = this._isHasThatOne(ids[i],cartData);
+      if(hasInfo.index != -1){
+        cartData.splice(hasInfo.index,1);
+      }
+    }
+    wx.setStorageSync(this._storageKeyName, cartData);
+  }
+  
+  // 更新本地缓存
+  execSetStorageSync(data){
+    wx.setStorageSync(this._storageKeyName, data);
+  }
 }
+
+export {Cart};

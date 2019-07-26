@@ -1,6 +1,8 @@
 // pages/product/product.js
 import {Product} from 'product-model.js';
+import {Cart} from '../cart/cart-model.js';
 var product = new Product();
+var cart = new Cart();
 
 Page({
 
@@ -30,9 +32,9 @@ Page({
       wx.setNavigationBarTitle({
         title: res.data.name
       });
-      console.log(res.data);
       this.setData({
-        product:res.data,
+        cartTotalCounts: cart.getCartTotalCounts(),
+        product:res.data
       });
     })
   },
@@ -48,6 +50,7 @@ Page({
     });
   },
 
+  // 获取（商品详情、产品参数、售后保障）绑定的 "data-index"
   onTabsItemTap:function(event){
     var index = product.getDataSet(event,'index');
     this.setData({
@@ -55,6 +58,33 @@ Page({
     });
   },
 
+  onAddingToCartTap:function(event){
+    this.addToCart();
+    var counts = this.data.cartTotalCounts + this.data.productCount;
+    this.setData({
+      cartTotalCounts: counts
+    });
+  },
+
+  // 将商品添加到购物车中
+  addToCart:function(){
+    var tempObj = {};
+    var keys = ['id','name','main_img_url','price'];
+    for(var key in this.data.product){
+      if (keys.indexOf(key) >= 0) {
+        tempObj[key] = this.data.product[key];
+      }
+    }
+    cart.add(tempObj,this.data.productCount);
+  },
+
+  // 跳转购物车页面
+  onCartTap:function(event){
+    wx.switchTab({
+      url: '/pages/cart/cart'
+    });
+  },
+  
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

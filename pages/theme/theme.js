@@ -30,6 +30,13 @@ Page({
     })
   },
 
+  onProductsItemTap: function (event){
+    var id = theme.getDataSet(event, 'id');
+    wx.navigateTo({
+      url: '../product/product?id=' + id
+    });
+  },
+
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
