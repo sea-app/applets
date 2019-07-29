@@ -137,6 +137,14 @@ Page({
     cart.delete(id);
   },
 
+  // 下单事件
+  submitOrder:function(event){
+    wx.navigateTo({
+      // this.data.account（购物车总金额数），from=cart（在cart页面跳转的）
+      url: '../order/order?account=' + this.data.account + '&from=cart'
+    });
+  },
+
 
   /**
    * 生命周期函数--监听页面隐藏(既离开页面)

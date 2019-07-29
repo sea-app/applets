@@ -6,7 +6,8 @@
     "pages/my/my",
     "pages/category/category",
     "pages/cart/cart",
-    "pages/theme/theme"
+    "pages/theme/theme",
+    "pages/order/order"
   ],
   "window": {
     "backgroundTextStyle": "light",
