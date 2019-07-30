@@ -53,8 +53,8 @@
 				{
 					"id": 0,
 					"name": "pages/category/category",
-					"pathName": "pages/cart/cart",
-					"query": "id=11",
+					"pathName": "pages/my/my",
+					"query": "",
 					"scene": null
 				}
 			]
