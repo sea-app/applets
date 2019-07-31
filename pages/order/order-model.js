@@ -14,7 +14,7 @@ class Order extends Base{
       type: 'post',
       data: {products: param},
       sCallback: function(data){
-        that.execSetStorageSync(true);
+        that.execSetStorageSync(true);  // 设置标志位（存在新的订单）
         callback && callback(data);
       }
     };
@@ -84,6 +84,12 @@ class Order extends Base{
       }
     };
     this.request(allParams);
+  }
+
+  // 判断是否有新订单(生成新订单之后会设置缓存：{this._storageKeyName:'true'})
+  hasNewOrder(){
+    var flag = wx.getStorageSync(this._storageKeyName);
+    return flag == true;
   }
 
   // 本地缓存 保存/更新

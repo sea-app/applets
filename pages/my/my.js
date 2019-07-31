@@ -35,7 +35,7 @@ Page({
   },
 
   // 获取用户订单
-  _getOrders:function(){
+  _getOrders:function(callback){
     order.getOrders(this.data.pageIndex,(res)=>{
       var data = res.data;
       if(data.length > 0){
@@ -43,6 +43,7 @@ Page({
         this.setData({
           orderArr: this.data.orderArr
         });
+        callback && callback();
       }
       else{
         this.data.isLoadeAll = true;
@@ -69,7 +70,7 @@ Page({
     var that = this;
     order.execPay(id, (statusCode) => {
       // if(statusCode != 0){     支付功能未完成
-      if (statusCode == 0) {      // 使用假数据使支付失败
+      if (statusCode == 0) {      // 使用假判断使支付失败
         var flag = statusCode == 2;
         // 更新订单显示状态
         if(flag){
@@ -90,16 +91,42 @@ Page({
   },
 
   /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-
-  },
-
-  /**
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    // 第二次打开我的页面，如果有新订单，重新加载订单数据
+    var newOrderFlag = order.hasNewOrder();
+    if (newOrderFlag){
+      this.refresh();
+    }
+  },
+
+  // 加载订单数据
+  refresh:function(){
+    var that = this;
+    this.data.orderArr = [];
+    this._getOrders(()=>{
+      that.data.isLoadedAll = false;    // 更新订单是否加载完全的的标志位
+      that.data.pageIndex = 1;
+      order.execSetStorageSync(false); // 更新是否有新订单的标志位
+    });
+  },
+
+  /**
+   * 页面上拉触底事件的处理函数
+   */
+  onReachBottom: function () {
+    // 下拉更新数据
+    if (!this.data.isLoadeAll) {
+      this.data.pageIndex++;
+      this._getOrders();
+    }
+  },
+
+  /**
+   * 生命周期函数--监听页面初次渲染完成
+   */
+  onReady: function () {
 
   },
 
@@ -122,17 +149,6 @@ Page({
    */
   onPullDownRefresh: function () {
 
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-    // 下拉更新数据
-    if(!this.data.isLoadeAll){
-      this.data.pageIndex++;
-      this._getOrders();
-    }
   },
 
   /**

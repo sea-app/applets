@@ -151,7 +151,7 @@ Page({
     var that = this;
     order.execPay(id, (statusCode)=>{
       // if(statusCode != 0){     支付功能未完成
-      if (statusCode == 0) {      // 使用假数据使支付失败
+      if (statusCode == 0) {      // 使用假判断使支付失败
         // 将已经下单的商品从购物车删除
         that.deleteProducts();
         var flag = statusCode == 2;
